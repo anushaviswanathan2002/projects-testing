@@ -1,0 +1,109 @@
+.stopwatch-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  color: white;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.time-display {
+  font-size: 5rem;
+  font-weight: bold;
+  color: white;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2rem 3rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  min-width: 400px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.1em;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-start {
+  background: #4ade80;
+  color: white;
+}
+
+.btn-start:hover:not(:disabled) {
+  background: #22c55e;
+}
+
+.btn-pause {
+  background: #fbbf24;
+  color: white;
+}
+
+.btn-pause:hover:not(:disabled) {
+  background: #f59e0b;
+}
+
+.btn-reset {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-reset:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .time-display {
+    font-size: 3rem;
+    padding: 1.5rem 2rem;
+    min-width: 280px;
+  }
+
+  .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+}
