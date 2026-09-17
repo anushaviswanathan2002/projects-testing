@@ -1,0 +1,137 @@
+.memory-game {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.memory-game h1 {
+  color: #667eea;
+  margin-bottom: 30px;
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 25px;
+  background: #f5f7fa;
+  border-radius: 10px;
+  flex: 1;
+}
+
+.stat .label {
+  color: #7c8fa3;
+  font-size: 0.9em;
+  font-weight: 600;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat .value {
+  color: #667eea;
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
+.win-message {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  font-size: 1.2em;
+  font-weight: bold;
+  line-height: 1.6;
+  animation: celebrate 0.6s ease-out;
+}
+
+@keyframes celebrate {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.reset-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.reset-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+
+.reset-button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .memory-game {
+    padding: 20px;
+  }
+
+  .memory-game h1 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  .stat {
+    padding: 10px 15px;
+  }
+
+  .stat .value {
+    font-size: 1.4em;
+  }
+}
