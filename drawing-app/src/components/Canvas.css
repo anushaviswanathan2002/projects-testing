@@ -1,0 +1,7 @@
+.canvas {
+  flex: 1;
+  display: block;
+  cursor: crosshair;
+  background-color: white;
+  touch-action: none;
+}
