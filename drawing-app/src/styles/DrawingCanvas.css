@@ -1,0 +1,119 @@
+.drawing-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  color: white;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  background: white;
+  padding: 15px 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control-group label {
+  font-weight: 500;
+  color: #333;
+}
+
+.color-picker {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+}
+
+.brush-slider {
+  width: 150px;
+  height: 6px;
+  cursor: pointer;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.btn-clear {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.btn-clear:hover {
+  background-color: #ee5a52;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+}
+
+.btn-download {
+  background-color: #4ecdc4;
+  color: white;
+}
+
+.btn-download:hover {
+  background-color: #44b3aa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(78, 205, 196, 0.3);
+}
+
+.canvas {
+  width: 800px;
+  height: 600px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  cursor: crosshair;
+  border: 3px solid white;
+}
+
+@media (max-width: 900px) {
+  .canvas {
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
