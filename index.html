@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .stat {
+            flex: 1;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            aspect-ratio: 1;
+            background: #667eea;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card:hover:not(.matched):not(.flipped) {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card.flipped {
+            background: white;
+            color: #333;
+            border: 2px solid #667eea;
+            pointer-events: none;
+        }
+
+        .card.matched {
+            background: #48bb78;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .card.matched::after {
+            content: '✓';
+            position: absolute;
+            font-size: 1.5em;
+            color: white;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-reset {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-difficulty {
+            background: #e2e8f0;
+            color: #333;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .btn-difficulty.active {
+            background: #764ba2;
+            color: white;
+        }
+
+        .btn-difficulty:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-difficulty.active:hover {
+            background: #6a3f8f;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .game-over {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f7ff;
+            border-radius: 12px;
+            border: 2px solid #667eea;
+        }
+
+        .game-over h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .game-over p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 400px) {
+            .game-board {
+                gap: 8px;
+            }
+
+            .card {
+                font-size: 1.5em;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Memory Game</h1>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">Moves</div>
+                <div class="stat-value" id="moves">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Matches</div>
+                <div class="stat-value" id="matches">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Best</div>
+                <div class="stat-value" id="best">-</div>
+            </div>
+        </div>
+
+        <div class="difficulty-selector">
+            <button class="btn-difficulty active" onclick="setDifficulty('easy')">Easy (4x3)</button>
+            <button class="btn-difficulty" onclick="setDifficulty('medium')">Medium (4x4)</button>
+            <button class="btn-difficulty" onclick="setDifficulty('hard')">Hard (4x5)</button>
+        </div>
+
+        <div class="game-board" id="game-board"></div>
+
+        <div id="game-over-message"></div>
+
+        <div class="buttons">
+            <button class="btn-reset" onclick="resetGame()">🔄 New Game</button>
+        </div>
+    </div>
+
+    <script>
+        const EMOJIS = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮'];
+        
+        let gameBoard = [];
+        let flipped = [];
+        let matched = [];
+        let moves = 0;
+        let difficulty = 'easy';
+        let gameOver = false;
+        let bestScore = localStorage.getItem('memoryGameBest') || null;
+
+        const difficultySettings = {
+            easy: { rows: 3, cols: 4 },
+            medium: { rows: 4, cols: 4 },
+            hard: { rows: 5, cols: 4 }
+        };
+
+        function initGame() {
+            const { rows, cols } = difficultySettings[difficulty];
+            const totalCards = rows * cols;
+            const pairs = totalCards / 2;
+            
+            gameBoard = [];
+            flipped = [];
+            matched = [];
+            moves = 0;
+            gameOver = false;
+
+            // Create pairs of emojis
+            const emojisToUse = EMOJIS.slice(0, pairs);
+            const cards = [...emojisToUse, ...emojisToUse];
+            
+            // Shuffle
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            
+            gameBoard = cards;
+            renderBoard();
+            updateStats();
+            clearGameOverMessage();
+        }
+
+        function renderBoard() {
+            const boardEl = document.getElementById('game-board');
+            boardEl.innerHTML = '';
+            
+            const { cols } = difficultySettings[difficulty];
+            boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+            gameBoard.forEach((emoji, index) => {
+                const card = document.createElement('button');
+                card.className = 'card';
+                
+                if (matched.includes(index)) {
+                    card.classList.add('matched');
+                    card.textContent = emoji;
+                } else if (flipped.includes(index)) {
+                    card.classList.add('flipped');
+                    card.textContent = emoji;
+                } else {
+                    card.textContent = '?';
+                }
+                
+                card.onclick = () => flipCard(index);
+                boardEl.appendChild(card);
+            });
+        }
+
+        function flipCard(index) {
+            if (gameOver || matched.includes(index) || flipped.includes(index)) {
+                return;
+            }
+
+            flipped.push(index);
+            renderBoard();
+
+            if (flipped.length === 2) {
+                moves++;
+                updateStats();
+                
+                const [first, second] = flipped;
+                if (gameBoard[first] === gameBoard[second]) {
+                    // Match found
+                    matched.push(first, second);
+                    flipped = [];
+                    renderBoard();
+                    updateStats();
+                    
+                    // Check if game is over
+                    if (matched.length === gameBoard.length) {
+                        gameOver = true;
+                        showGameOverMessage();
+                        updateBestScore();
+                    }
+                } else {
+                    // No match, flip back after delay
+                    setTimeout(() => {
+                        flipped = [];
+                        renderBoard();
+                    }, 1000);
+                }
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('moves').textContent = moves;
+            document.getElementById('matches').textContent = matched.length / 2;
+            if (bestScore) {
+                document.getElementById('best').textContent = bestScore;
+            }
+        }
+
+        function updateBestScore() {
+            if (!bestScore || moves < parseInt(bestScore)) {
+                bestScore = moves;
+                localStorage.setItem('memoryGameBest', moves);
+                document.getElementById('best').textContent = bestScore;
+            }
+        }
+
+        function showGameOverMessage() {
+            const msgEl = document.getElementById('game-over-message');
+            msgEl.innerHTML = `
+                <div class="game-over">
+                    <h2>🎉 You Won!</h2>
+                    <p>Completed in <strong>${moves} moves</strong></p>
+                </div>
+            `;
+        }
+
+        function clearGameOverMessage() {
+            document.getElementById('game-over-message').innerHTML = '';
+        }
+
+        function resetGame() {
+            initGame();
+        }
+
+        function setDifficulty(newDifficulty) {
+            difficulty = newDifficulty;
+            
+            // Update button styles
+            document.querySelectorAll('.btn-difficulty').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            resetGame();
+        }
+
+        // Initialize game on load
+        initGame();
+    </script>
+</body>
+</html>
