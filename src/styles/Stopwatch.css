@@ -1,0 +1,177 @@
+.stopwatch-container {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.stopwatch-container h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.stopwatch-display {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.time-display {
+  font-size: 60px;
+  font-weight: 700;
+  color: white;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+}
+
+.milliseconds {
+  font-size: 40px;
+  opacity: 0.8;
+}
+
+.stopwatch-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.btn-start {
+  background: #51cf66;
+  color: white;
+}
+
+.btn-start:hover {
+  background: #40c057;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(81, 207, 102, 0.3);
+}
+
+.btn-stop {
+  background: #ff6b6b;
+  color: white;
+}
+
+.btn-stop:hover {
+  background: #ff5252;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.btn-lap {
+  background: #667eea;
+  color: white;
+}
+
+.btn-lap:hover:not(:disabled) {
+  background: #764ba2;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-lap:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-reset {
+  background: #ffd93d;
+  color: #333;
+}
+
+.btn-reset:hover {
+  background: #ffcf1a;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 217, 61, 0.3);
+}
+
+.laps-section {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.laps-section h3 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.laps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.lap-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 6px;
+  font-size: 14px;
+  border-left: 3px solid #667eea;
+}
+
+.lap-number {
+  font-weight: 600;
+  color: #333;
+}
+
+.lap-time {
+  font-family: 'Courier New', monospace;
+  color: #667eea;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 600px) {
+  .stopwatch-container {
+    padding: 20px;
+  }
+
+  .time-display {
+    font-size: 48px;
+  }
+
+  .milliseconds {
+    font-size: 32px;
+  }
+
+  .btn {
+    min-width: 70px;
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+}
