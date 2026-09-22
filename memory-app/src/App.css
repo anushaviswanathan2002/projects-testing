@@ -1,0 +1,354 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.toggle-auth {
+  margin-top: 20px;
+  color: white;
+  text-align: center;
+}
+
+.toggle-auth button {
+  background: none;
+  border: none;
+  color: #ffd700;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.toggle-auth button:hover {
+  color: #ffed4e;
+}
+
+.form-container {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-container h2 {
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Dashboard Styles */
+.dashboard {
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  color: #333;
+}
+
+.logout-btn {
+  background: #ff6b6b;
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-btn:hover {
+  background: #ff5252;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Memory Game Styles */
+.game-container {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.game-container h2 {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.game-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f0f0f0;
+  border-radius: 5px;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 14px;
+}
+
+.stat-value {
+  color: #667eea;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.memory-card {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  color: white;
+  font-weight: bold;
+}
+
+.memory-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.memory-card.flipped {
+  background: white;
+  color: #333;
+}
+
+.memory-card.matched {
+  background: #4caf50;
+  cursor: default;
+}
+
+.memory-card.matched:hover {
+  transform: none;
+}
+
+.game-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.game-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.start-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.reset-btn {
+  background: #ff9800;
+  color: white;
+}
+
+.start-btn:hover, .reset-btn:hover {
+  transform: translateY(-2px);
+}
+
+.game-over-message {
+  text-align: center;
+  color: #4caf50;
+  font-weight: bold;
+  margin: 15px 0;
+  font-size: 18px;
+}
+
+/* Stopwatch Styles */
+.stopwatch-container {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stopwatch-container h2 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.stopwatch-display {
+  font-size: 64px;
+  font-weight: bold;
+  color: #667eea;
+  margin: 30px 0;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 5px;
+}
+
+.stopwatch-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.stopwatch-buttons button {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+
+.stopwatch-buttons button:hover {
+  transform: translateY(-2px);
+}
+
+.start-stopwatch {
+  background: #4caf50;
+  color: white;
+}
+
+.start-stopwatch:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.pause-stopwatch {
+  background: #ff9800;
+  color: white;
+}
+
+.pause-stopwatch:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.reset-stopwatch {
+  background: #f44336;
+  color: white;
+}
+
+.laps-list {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.laps-list h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.lap-item {
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+}
