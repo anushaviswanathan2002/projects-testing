@@ -1,0 +1,231 @@
+.stopwatch-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.stopwatch-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.stopwatch-display {
+  width: 100%;
+  text-align: center;
+}
+
+.time-display {
+  font-size: 64px;
+  font-weight: 700;
+  color: white;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  letter-spacing: 2px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-start {
+  grid-column: 1;
+}
+
+.btn-stop {
+  grid-column: 2;
+}
+
+.btn-reset {
+  grid-column: 1;
+}
+
+.btn-lap {
+  grid-column: 2;
+}
+
+.laps-section {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 30px;
+  border: 2px solid #e0e0e0;
+}
+
+.laps-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 15px;
+}
+
+.laps-header h3 {
+  color: #333;
+  font-size: 20px;
+  margin: 0;
+}
+
+.clear-btn {
+  padding: 8px 16px;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.clear-btn:hover {
+  background: #ff5252;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}
+
+.laps-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.no-laps {
+  text-align: center;
+  color: #999;
+  padding: 30px 20px;
+  font-style: italic;
+}
+
+.laps-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lap-item {
+  display: grid;
+  grid-template-columns: 80px 100px 1fr;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  gap: 15px;
+}
+
+.lap-item:last-child {
+  border-bottom: none;
+}
+
+.lap-item:hover {
+  background: #f0f0f0;
+}
+
+.lap-number {
+  font-weight: 600;
+  color: #667eea;
+  font-size: 14px;
+}
+
+.lap-time {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+}
+
+.lap-timestamp {
+  text-align: right;
+  font-size: 12px;
+  color: #999;
+}
+
+/* Scrollbar styling */
+.laps-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.laps-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.laps-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.laps-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@media (max-width: 768px) {
+  .stopwatch-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .time-display {
+    font-size: 48px;
+    min-height: 60px;
+  }
+
+  .controls {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stopwatch-card,
+  .laps-section {
+    padding: 20px;
+  }
+
+  .laps-list {
+    max-height: 300px;
+  }
+
+  .lap-item {
+    grid-template-columns: 70px 90px 1fr;
+    font-size: 13px;
+  }
+
+  .lap-time {
+    font-size: 14px;
+  }
+}
