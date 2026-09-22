@@ -1,0 +1,184 @@
+.stopwatch-container {
+  background: white;
+  border-radius: 10px;
+  padding: 40px 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.stopwatch-display {
+  text-align: center;
+}
+
+.time-display {
+  font-size: 72px;
+  font-weight: bold;
+  color: #667eea;
+  margin: 30px 0;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stopwatch-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 30px 0;
+}
+
+.control-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 100px;
+}
+
+.start-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.start-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.pause-btn {
+  background-color: #ff9800;
+  color: white;
+}
+
+.pause-btn:hover {
+  background-color: #e68900;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+}
+
+.lap-btn {
+  background-color: #2196F3;
+  color: white;
+}
+
+.lap-btn:hover {
+  background-color: #0b7dda;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+.reset-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.reset-btn:hover {
+  background-color: #da190b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+.control-btn:active {
+  transform: translateY(0);
+}
+
+.laps-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px solid #eee;
+}
+
+.laps-section h3 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.laps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.lap-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  border-left: 4px solid #667eea;
+  align-items: center;
+  font-family: 'Courier New', monospace;
+}
+
+.lap-number {
+  font-weight: bold;
+  color: #667eea;
+}
+
+.lap-time {
+  color: #2196F3;
+  font-weight: bold;
+  text-align: center;
+}
+
+.total-time {
+  color: #666;
+  text-align: right;
+  font-size: 14px;
+}
+
+.laps-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.laps-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.laps-list::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 10px;
+}
+
+.laps-list::-webkit-scrollbar-thumb:hover {
+  background: #764ba2;
+}
+
+@media (max-width: 600px) {
+  .stopwatch-container {
+    padding: 20px;
+  }
+
+  .time-display {
+    font-size: 48px;
+  }
+
+  .control-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    min-width: 80px;
+  }
+
+  .lap-item {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .total-time {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+}
