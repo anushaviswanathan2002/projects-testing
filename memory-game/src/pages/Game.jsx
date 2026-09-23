@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../context/AuthContext'
 import './Game.css'
 
 const EMOJIS = ['🐶', '🐱', '🐸', '🦊', '🐻', '🦁', '🐼', '🦄', '🐙', '🦋', '🌸', '⭐', '🍕', '🎸', '🚀', '🎯']
@@ -31,8 +30,7 @@ const DIFFICULTY = {
 }
 
 export default function Game() {
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
+  const { user, updateStats } = useAuth()
 
   const [difficulty, setDifficulty] = useState('medium')
   const [cards, setCards] = useState(() => buildDeck(DIFFICULTY.medium.pairs * 2))
@@ -58,6 +56,7 @@ export default function Game() {
     if (matches > 0 && matches === totalPairs) {
       setRunning(false)
       setWon(true)
+      updateStats(moves)
     }
   }, [matches, totalPairs])
 
@@ -122,24 +121,10 @@ export default function Game() {
     return `${m}:${sec}`
   }
 
-  function handleLogout() {
-    logout()
-    navigate('/login')
-  }
-
   const cols = DIFFICULTY[difficulty].cols
 
   return (
     <div className="game-page">
-      {/* Navbar */}
-      <header className="game-nav">
-        <div className="game-nav-logo">🃏 Memory</div>
-        <div className="game-nav-right">
-          <span className="game-nav-user">👤 {user?.username}</span>
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        </div>
-      </header>
-
       <main className="game-main">
         {/* Controls */}
         <div className="game-controls">
@@ -173,6 +158,12 @@ export default function Game() {
             <span className="stat-label">Time</span>
             <span className="stat-value">{formatTime(time)}</span>
           </div>
+          {user?.bestScore != null && (
+            <div className="stat">
+              <span className="stat-label">Best</span>
+              <span className="stat-value">{user.bestScore}</span>
+            </div>
+          )}
         </div>
 
         {/* Board */}
@@ -207,7 +198,7 @@ export default function Game() {
               <div className="win-emoji">🎉</div>
               <h2>You Won!</h2>
               <p>Solved in <strong>{moves}</strong> moves and <strong>{formatTime(time)}</strong></p>
-              <button className="auth-btn" onClick={() => startGame(difficulty)}>Play Again</button>
+              <button className="btn-primary" onClick={() => startGame(difficulty)}>Play Again</button>
             </div>
           </div>
         )}
