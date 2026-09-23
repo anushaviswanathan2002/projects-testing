@@ -1,0 +1,244 @@
+.game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 1rem;
+  position: relative;
+}
+
+.game-header {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.game-stats {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.stat-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 72px;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.game-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.difficulty-tabs {
+  display: flex;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  padding: 0.2rem;
+  gap: 0.2rem;
+}
+
+.diff-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.diff-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.diff-btn:hover:not(.active) {
+  background: var(--border);
+  color: var(--text);
+}
+
+.btn-restart {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-restart:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  gap: 0.65rem;
+  width: 100%;
+  max-width: 700px;
+}
+
+.card {
+  aspect-ratio: 1;
+  cursor: pointer;
+  perspective: 800px;
+  border-radius: 0.75rem;
+  outline: none;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.75rem;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-back,
+.card-front {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  user-select: none;
+}
+
+.card-back {
+  background: var(--card-back);
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+  font-size: clamp(1.2rem, 3.5vw, 2rem);
+  transition: background 0.15s;
+}
+
+.card:hover:not(.flipped) .card-back {
+  background: var(--card-back-hover);
+}
+
+.card-front {
+  background: var(--card-front);
+  border: 2px solid var(--accent);
+  transform: rotateY(180deg);
+}
+
+.card.matched .card-front {
+  background: var(--card-matched);
+  border-color: #34d399;
+}
+
+/* Win Overlay */
+.win-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.win-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.win-emoji {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.win-card h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.75rem;
+  color: var(--text);
+}
+
+.win-card p {
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.win-user {
+  color: var(--accent) !important;
+  font-size: 1.05rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.win-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+.win-actions .btn-primary {
+  max-width: 180px;
+}
