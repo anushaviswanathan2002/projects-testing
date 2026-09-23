@@ -1,0 +1,16 @@
+{
+  "name": "todo-saas",
+  "version": "1.0.0",
+  "description": "Enterprise-grade To-Do application with modern SaaS features",
+  "private": true,
+  "workspaces": [
+    "packages/backend",
+    "packages/frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=packages/backend & npm run dev --workspace=packages/frontend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "start": "npm start --workspace=packages/backend"
+  }
+}
