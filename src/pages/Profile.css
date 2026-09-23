@@ -1,0 +1,101 @@
+.profile-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.profile-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+.profile-info { flex: 1; }
+.profile-name { font-size: 1.2rem; font-weight: 700; }
+.profile-email { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
+.profile-logout { margin-left: auto; }
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.pstat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 12px;
+  text-align: center;
+}
+.pstat-val {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+.pstat-val.accent {
+  background: linear-gradient(135deg, #f1f5f9, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.pstat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.history-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.history-empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 24px 0;
+}
+.history-list { display: flex; flex-direction: column; gap: 2px; }
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--border);
+}
+.history-row:last-child { border-bottom: none; }
+.hr-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.diff-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.diff-dot.diff-easy   { background: #10b981; }
+.diff-dot.diff-medium { background: #fbbf24; }
+.diff-dot.diff-hard   { background: #ef4444; }
+
+.hr-diff  { font-size: 0.82rem; font-weight: 600; text-transform: capitalize; color: var(--text-muted); }
+.hr-date  { font-size: 0.82rem; color: var(--text-muted); }
+.hr-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.hr-score { font-size: 0.95rem; font-weight: 700; }
+.hr-meta  { font-size: 0.78rem; color: var(--text-muted); }
