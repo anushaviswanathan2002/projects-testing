@@ -1,189 +1,248 @@
-# Memory App
+# 🎮 Memory Game App
 
-A full-stack web application for storing and managing personal memories with user authentication.
+A full-stack memory matching game with user authentication, score tracking, and a live leaderboard.
 
-## Features
+## 🎯 Features
 
-- **User Authentication**: Secure signup and login with JWT tokens
-- **Create Memories**: Add new memories with title and content
-- **View Memories**: Display all your memories in a beautiful grid layout
-- **Edit Memories**: Update existing memories
-- **Delete Memories**: Remove memories you no longer need
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **User Authentication**
+  - Sign up with username and password
+  - Secure login with JWT tokens
+  - Password hashing with bcryptjs
+  - Session management
 
-## Project Structure
+- **Memory Game**
+  - 4x4 grid with 8 emoji pairs
+  - Flip cards to find matching pairs
+  - Score calculation: 100 - moves
+  - Real-time game statistics
+  - Game completion detection
+
+- **User Features**
+  - User profile with game statistics
+  - Best score tracking
+  - Games played counter
+  - Last game score display
+
+- **Leaderboard**
+  - Top 10 players by best score
+  - Real-time ranking updates
+  - Highlight current player
+
+- **UI/UX**
+  - Beautiful gradient design
+  - Smooth card flip animations
+  - Responsive layout (desktop & mobile)
+  - Intuitive navigation
+
+## 📁 Project Structure
 
 ```
 memory-app/
-├── backend/          # Node.js/Express API server
-│   ├── server.js     # Main server file
-│   └── package.json  # Backend dependencies
-├── frontend/         # React frontend application
-│   ├── src/
-│   │   ├── pages/    # Page components (Login, Signup, Dashboard)
-│   │   ├── components/ # Reusable components (MemoryForm, MemoryCard, etc.)
-│   │   └── App.js    # Main app component
-│   └── package.json  # Frontend dependencies
-└── README.md
+├── backend/
+│   ├── server.js          # Express server with routes
+│   ├── .env               # Environment variables
+│   └── package.json       # Backend dependencies
+│
+└── frontend/
+    ├── src/
+    │   ├── App.jsx        # Main app component
+    │   ├── main.jsx       # React entry point
+    │   ├── pages/         # Page components
+    │   │   ├── LoginPage.jsx
+    │   │   ├── SignupPage.jsx
+    │   │   └── GamePage.jsx
+    │   ├── components/    # UI components
+    │   │   ├── MemoryGame.jsx
+    │   │   ├── Card.jsx
+    │   │   └── UserProfile.jsx
+    │   └── styles/        # CSS files
+    ├── index.html         # HTML entry point
+    ├── vite.config.js     # Vite configuration
+    └── package.json       # Frontend dependencies
 ```
 
-## Technology Stack
-
-### Backend
-- **Node.js & Express**: RESTful API server
-- **SQLite**: Database for storing users and memories
-- **JWT**: Secure user authentication
-- **bcryptjs**: Password hashing and security
-
-### Frontend
-- **React 18**: UI library
-- **React Router**: Navigation and routing
-- **Axios**: HTTP client for API requests
-- **CSS3**: Styling with modern design
-
-## Installation & Setup
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm (v6 or higher)
+- Node.js (v14+)
+- npm or yarn
 
-### Installation
+### Backend Setup
 
-1. Install all dependencies:
+1. Navigate to backend directory:
+```bash
+cd memory-app/backend
+```
+
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-This will install dependencies for both backend and frontend due to workspace configuration.
-
-### Running the Application
-
-#### Option 1: Run backend and frontend separately (Recommended for development)
-
-**Terminal 1 - Start Backend:**
+3. Start the backend server:
 ```bash
-cd backend
 npm start
 ```
-The API server will run on `http://localhost:5000`
 
-**Terminal 2 - Start Frontend:**
+The server will run on `http://localhost:5000`
+
+### Frontend Setup
+
+1. In a new terminal, navigate to frontend directory:
 ```bash
-cd frontend
-npm start
+cd memory-app/frontend
 ```
-The React app will open on `http://localhost:3000`
 
-#### Option 2: Run both simultaneously
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
 ```bash
 npm run dev
 ```
 
-## API Endpoints
+The app will be available on `http://localhost:3001` (or the next available port)
+
+## 📚 API Endpoints
 
 ### Authentication
-- `POST /api/auth/signup` - Create a new account
-- `POST /api/auth/login` - Login to existing account
 
-### Memories
-- `GET /api/memories` - Get all memories for logged-in user
-- `POST /api/memories` - Create a new memory
-- `PUT /api/memories/:id` - Update a memory
-- `DELETE /api/memories/:id` - Delete a memory
+- `POST /auth/signup` - Create new user
+  ```json
+  { "username": "user", "password": "pass" }
+  ```
 
-## Usage
+- `POST /auth/login` - Login user
+  ```json
+  { "username": "user", "password": "pass" }
+  ```
 
-1. **Sign Up**: Create a new account with your email and password
-2. **Login**: Log in with your credentials
-3. **Create Memory**: Click "Add Memory" and fill in the title and content
-4. **View Memories**: All your memories are displayed in the dashboard
-5. **Edit Memory**: Click "Edit" on any memory card to update it
-6. **Delete Memory**: Click "Delete" to remove a memory (confirmation required)
-7. **Logout**: Click "Logout" to end your session
+- `GET /auth/profile` - Get user profile (requires token)
 
-## Security Features
+### Scores
 
-- Passwords are hashed using bcryptjs
-- JWT tokens are used for secure API authentication
-- User memories are isolated per user (token-based authorization)
-- Token expires after 7 days
-- CORS enabled for secure cross-origin requests
+- `POST /scores/save` - Save game score (requires token)
+  ```json
+  { "score": 85, "moves": 20, "time": 45 }
+  ```
 
-## Database Schema
+- `GET /scores/leaderboard` - Get top 10 scores
 
-### Users Table
-```sql
-CREATE TABLE users (
-  id INTEGER PRIMARY KEY,
-  email TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-)
-```
+## 🎮 How to Play
 
-### Memories Table
-```sql
-CREATE TABLE memories (
-  id INTEGER PRIMARY KEY,
-  user_id INTEGER NOT NULL,
-  title TEXT NOT NULL,
-  content TEXT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-)
-```
+1. **Sign Up or Login**
+   - Create a new account or login with existing credentials
+   - Passwords are securely hashed
 
-## Environment Variables
+2. **Play the Game**
+   - Click on cards to reveal emojis
+   - Find matching pairs
+   - Complete the game with minimum moves for best score
 
-### Backend (.env)
-```
-PORT=5000
-JWT_SECRET=your-secret-key-change-in-production
-```
+3. **View Stats**
+   - Check your profile for best score and games played
+   - View the live leaderboard to see how you rank
 
-Change `JWT_SECRET` to a secure random string in production.
+4. **Play Again**
+   - Click "Play Again" after completing a game
+   - Try to beat your best score!
 
-## Customization
+## 🎨 Technologies Used
 
-### Change JWT Secret
-Edit `backend/.env` and replace the `JWT_SECRET` value with a secure random string.
+### Backend
+- **Express.js** - Web framework
+- **bcryptjs** - Password hashing
+- **jsonwebtoken** - JWT authentication
+- **CORS** - Cross-origin requests
+- **dotenv** - Environment variables
 
-### Change API Port
-Modify `PORT` in `backend/.env` (default is 5000).
+### Frontend
+- **React** - UI library
+- **Vite** - Build tool
+- **CSS3** - Styling with animations
+- **Fetch API** - HTTP requests
 
-### Update Frontend API URL
-If the backend runs on a different port/URL, update the proxy in `frontend/package.json`.
+## 🔐 Security Features
 
-## Troubleshooting
+- JWT token-based authentication
+- Bcrypt password hashing (10 rounds)
+- CORS enabled for cross-origin requests
+- Token expiration (7 days)
+- Secure password validation
 
-**Issue**: Backend fails to start
-- Ensure port 5000 is not in use: `lsof -i :5000` (macOS/Linux)
-- Check Node.js version: `node --version`
+## 📱 Responsive Design
 
-**Issue**: Frontend can't connect to API
-- Verify backend is running: Check `http://localhost:5000/api/memories`
-- Check CORS settings in `backend/server.js`
-- Clear browser cache and refresh
+The app is fully responsive and works on:
+- Desktop (1200px+)
+- Tablet (768px - 1199px)
+- Mobile (< 768px)
 
-**Issue**: Database file won't create
-- Ensure backend directory has write permissions
-- Check if `memories.db` file exists in the backend directory
+## 🎯 Game Scoring
 
-## Future Enhancements
+- Base score: 100
+- Deduction: 1 point per move
+- Example: If you complete the game in 20 moves, your score is 80
+- Best score is saved to leaderboard
 
-- Add memory search and filtering
-- Add tags/categories for memories
-- Add export memories to PDF/JSON
-- Add image support for memories
-- Add sharing memories with other users
-- Add dark mode toggle
-- Add password reset functionality
+## 🚀 Performance
 
-## License
+- Lightweight bundle with Vite
+- Optimized card flip animations
+- Efficient state management with React hooks
+- In-memory user storage (ready for database migration)
+
+## 📝 Example Users
+
+After starting the app, you can create new accounts. Here's an example:
+- Username: `testuser`
+- Password: `password123`
+
+## 🔄 State Management
+
+- Frontend: React hooks (useState, useEffect)
+- Backend: In-memory storage (easily replaceable with a database)
+- Authentication: JWT tokens with localStorage
+
+## 📊 Leaderboard Calculation
+
+The leaderboard shows:
+- Player rank
+- Username
+- Best score (highest score achieved)
+
+Rankings are sorted in descending order by best score.
+
+## 🎓 Learning Points
+
+This project demonstrates:
+- Full-stack web development
+- JWT authentication
+- Password security with bcrypt
+- React component composition
+- API integration
+- Responsive CSS design
+- Game logic implementation
+- Score/leaderboard management
+
+## 🛠️ Future Enhancements
+
+- Database integration (MongoDB, PostgreSQL)
+- Difficulty levels (3x3, 4x4, 5x5 grids)
+- Sound effects and animations
+- User avatars
+- Achievement badges
+- Email verification
+- Password reset
+- Social sharing
+- Mobile app version
+- Real-time multiplayer
+
+## 📄 License
 
 ISC
 
-## Support
+---
 
-For issues or questions, please open an issue in the repository.
+Enjoy the game! 🎮✨
