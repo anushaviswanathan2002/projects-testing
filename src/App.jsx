@@ -2,7 +2,10 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import Board from './components/Board.jsx'
 import StatsBar from './components/StatsBar.jsx'
 import WinModal from './components/WinModal.jsx'
+import AuthGate from './components/AuthGate.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 import { buildDeck, EMOJI_THEMES } from './lib/deck.js'
+import { loadBestFor, saveBestFor } from './lib/auth.js'
 
 const GRID_SIZES = {
   easy: { pairs: 6, cols: 4 },
@@ -10,7 +13,8 @@ const GRID_SIZES = {
   hard: { pairs: 12, cols: 6 },
 }
 
-function App() {
+function MemoryGame() {
+  const { user, logout } = useAuth()
   const [theme, setTheme] = useState('animals')
   const [difficulty, setDifficulty] = useState('medium')
   const [deck, setDeck] = useState([])
@@ -19,17 +23,15 @@ function App() {
   const [moves, setMoves] = useState(0)
   const [elapsed, setElapsed] = useState(0)
   const [running, setRunning] = useState(false)
-  const [best, setBest] = useState(() => {
-    try {
-      const raw = localStorage.getItem('memory:best')
-      return raw ? JSON.parse(raw) : {}
-    } catch {
-      return {}
-    }
-  })
+  const [best, setBest] = useState(() => loadBestFor(user?.username))
 
   const lockRef = useRef(false)
   const timerRef = useRef(null)
+
+  // Reload best scores when the signed-in user changes.
+  useEffect(() => {
+    setBest(loadBestFor(user?.username))
+  }, [user])
 
   const { pairs, cols } = GRID_SIZES[difficulty]
 
@@ -106,22 +108,35 @@ function App() {
       const isBetter =
         !current || moves < current.moves || (moves === current.moves && elapsed < current.time)
       const updated = isBetter ? { ...prev, [key]: entry } : prev
-      try {
-        localStorage.setItem('memory:best', JSON.stringify(updated))
-      } catch {}
+      saveBestFor(user?.username, updated)
       return updated
     })
-  }, [won, theme, difficulty, moves, elapsed])
+  }, [won, theme, difficulty, moves, elapsed, user])
 
   const bestForCurrent = best[`${theme}:${difficulty}`]
 
   return (
     <div className="app">
       <header className="hero">
-        <h1>
-          <span className="logo">🧠</span> Memory
-        </h1>
-        <p className="tagline">Flip cards. Find pairs. Train your brain.</p>
+        <div className="hero-main">
+          <h1>
+            <span className="logo">🧠</span> Memory
+          </h1>
+          <p className="tagline">
+            Flip cards. Find pairs. Train your brain.
+          </p>
+        </div>
+        <div className="hero-user">
+          <span className="user-chip">
+            <span className="avatar" aria-hidden="true">
+              {user?.username?.[0]?.toUpperCase() || '?'}
+            </span>
+            <span className="user-name">{user?.username}</span>
+          </span>
+          <button type="button" className="btn ghost" onClick={logout}>
+            Log out
+          </button>
+        </div>
       </header>
 
       <section className="controls">
@@ -193,4 +208,19 @@ function App() {
   )
 }
 
-export default App
+export default function App() {
+  const { user, hydrated } = useAuth()
+
+  if (!hydrated) {
+    return (
+      <div className="auth-screen">
+        <div className="auth-card loading">Loading…</div>
+      </div>
+    )
+  }
+
+  if (!user) return <AuthGate />
+
+  // Keying on username resets the game when a different user signs in.
+  return <MemoryGame key={user.username} />
+}
