@@ -1,0 +1,16 @@
+{
+  "name": "memory-game",
+  "version": "1.0.0",
+  "description": "Memory matching game with user authentication",
+  "main": "server.js",
+  "scripts": {
+    "dev": "npm run server & npm run client",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "start": "node backend/server.js"
+  },
+  "keywords": ["memory", "game", "react"],
+  "author": "",
+  "license": "MIT"
+}
