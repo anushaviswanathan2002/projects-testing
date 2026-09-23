@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
+import Signup from "./pages/Signup";
 import Game from "./pages/Game";
 
 function ProtectedRoute({ children }) {
@@ -31,7 +31,7 @@ export default function App() {
             path="/signup"
             element={
               <PublicRoute>
-                <SignUp />
+                <Signup />
               </PublicRoute>
             }
           />

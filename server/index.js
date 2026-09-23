@@ -5,13 +5,15 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
 const db = new Database.Database(join(__dirname, '../memory.db'));
-const JWT_SECRET = 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'memory-game-secret-key-change-in-prod';
 
 // Middleware
 app.use(cors());
@@ -131,7 +133,7 @@ app.post('/api/games', verifyToken, (req, res) => {
   
   db.run(
     'INSERT INTO games (user_id, score, moves, completed) VALUES (?, ?, ?, ?)',
-    [req.userId, score, moves, completed ? 1 : 0],
+    [req.userId, score ?? 0, moves ?? 0, completed ? 1 : 0],
     function(err) {
       if (err) {
         return res.status(500).json({ error: 'Failed to save game' });
@@ -158,7 +160,12 @@ app.get('/api/games', verifyToken, (req, res) => {
 // Get user stats
 app.get('/api/stats', verifyToken, (req, res) => {
   db.get(
-    'SELECT COUNT(*) as total_games, SUM(completed) as games_won, MIN(moves) as best_moves FROM games WHERE user_id = ?',
+    `SELECT
+       COUNT(*) as total_games,
+       SUM(completed) as games_won,
+       MIN(CASE WHEN completed = 1 THEN moves END) as best_moves,
+       MAX(CASE WHEN completed = 1 THEN score END) as best_score
+     FROM games WHERE user_id = ?`,
     [req.userId],
     (err, stats) => {
       if (err) {
@@ -167,7 +174,8 @@ app.get('/api/stats', verifyToken, (req, res) => {
       res.json({
         total_games: stats.total_games || 0,
         games_won: stats.games_won || 0,
-        best_moves: stats.best_moves || null
+        best_moves: stats.best_moves || null,
+        best_score: stats.best_score || null,
       });
     }
   );
