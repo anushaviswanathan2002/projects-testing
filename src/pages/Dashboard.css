@@ -256,14 +256,31 @@
   flex-shrink: 0;
 }
 
+.score-diff {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  min-width: 44px;
+}
+
 .score-moves {
   font-weight: 600;
   flex: 1;
 }
 
-.score-date {
-  color: rgba(255, 255, 255, 0.4);
+.score-time {
+  color: rgba(255, 255, 255, 0.45);
   font-size: 0.8rem;
+  min-width: 36px;
+  text-align: right;
+}
+
+.score-date {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.8rem;
+  min-width: 50px;
+  text-align: right;
 }
 
 /* Leaderboard */

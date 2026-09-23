@@ -2,6 +2,7 @@ import { useAuth } from '../context/AuthContext';
 import './Dashboard.css';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
+const DIFF_COLORS = { Easy: '#2ed573', Medium: '#ffa502', Hard: '#ff4757' };
 
 export default function Dashboard({ onPlay }) {
   const { user, logout, getUserData, getLeaderboard } = useAuth();
@@ -12,6 +13,13 @@ export default function Dashboard({ onPlay }) {
 
   function formatScore(moves) {
     return `${moves} move${moves !== 1 ? 's' : ''}`;
+  }
+
+  function formatTime(s) {
+    if (!s) return '—';
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m > 0 ? `${m}m ${sec}s` : `${sec}s`;
   }
 
   function formatDate(ts) {
@@ -69,7 +77,16 @@ export default function Dashboard({ onPlay }) {
                 {scores.slice(0, 8).map((s, i) => (
                   <li key={i} className="score-item">
                     <span className="score-rank">#{i + 1}</span>
+                    {s.difficulty && (
+                      <span
+                        className="score-diff"
+                        style={{ color: DIFF_COLORS[s.difficulty] || '#fff' }}
+                      >
+                        {s.difficulty}
+                      </span>
+                    )}
                     <span className="score-moves">{formatScore(s.score)}</span>
+                    <span className="score-time">{formatTime(s.time)}</span>
                     <span className="score-date">{formatDate(s.date)}</span>
                   </li>
                 ))}

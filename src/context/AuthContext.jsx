@@ -62,11 +62,11 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
-  function saveScore(score) {
+  function saveScore(score, time, difficulty) {
     const users = getUsers();
     if (!users[user.username]) return;
-    const entry = { score, date: Date.now() };
-    users[user.username].scores = [entry, ...(users[user.username].scores || [])].slice(0, 10);
+    const entry = { score, time: time ?? 0, difficulty: difficulty ?? 'Easy', date: Date.now() };
+    users[user.username].scores = [entry, ...(users[user.username].scores || [])].slice(0, 20);
     saveUsers(users);
   }
 

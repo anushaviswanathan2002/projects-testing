@@ -117,8 +117,9 @@ export default function GamePage({ onExit }) {
   useEffect(() => {
     if (phase !== 'playing' || cards.length === 0) return;
     if (cards.every(c => c.matched)) {
+      const finalMoves = moves + (flipped.length === 2 ? 1 : 0);
       setPhase('won');
-      saveScore(moves + (flipped.length === 2 ? 1 : 0));
+      saveScore(finalMoves, elapsed, diff.label);
     }
   }, [cards, phase]);
 
