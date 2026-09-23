@@ -36,7 +36,7 @@ export default function TodoApp() {
     if (!text) return;
     setTasks((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), text, done: false, createdAt: Date.now() },
+      { id: newId(), text, done: false, createdAt: Date.now() },
     ]);
     setDraft('');
   };
