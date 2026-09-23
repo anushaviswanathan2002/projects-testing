@@ -1,0 +1,20 @@
+{
+  "name": "memory-game-app",
+  "version": "1.0.0",
+  "description": "Memory game with user authentication",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node server/index.js",
+    "build": "cd client && npm run build",
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  }
+}
