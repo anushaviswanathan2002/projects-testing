@@ -1,0 +1,12 @@
+.memory-board {
+  display: grid;
+  gap: 0.65rem;
+  width: 100%;
+  max-width: 640px;
+}
+
+@media (max-width: 480px) {
+  .memory-board {
+    gap: 0.45rem;
+  }
+}
