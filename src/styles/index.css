@@ -1,0 +1,77 @@
+:root {
+  --bg-0: #0f1226;
+  --bg-1: #171a3a;
+  --bg-2: #20254f;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-strong: rgba(255, 255, 255, 0.10);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #e8ebff;
+  --text-dim: #a5acd1;
+  --text-muted: #7a82b3;
+  --primary: #7c5cff;
+  --primary-2: #5b8bff;
+  --accent: #2dd4bf;
+  --danger: #ff6b8b;
+  --success: #34d399;
+  --radius: 14px;
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(124, 92, 255, 0.25), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(45, 212, 191, 0.18), transparent 60%),
+    linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 50%, var(--bg-0) 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--primary-2);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h1, h2, h3 {
+  margin: 0 0 0.4em;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0 0 0.6em;
+  line-height: 1.55;
+}
+
+.muted {
+  color: var(--text-dim);
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 4px;
+}
+
+button {
+  font-family: inherit;
+}
