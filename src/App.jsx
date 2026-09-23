@@ -1,9 +1,12 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext.jsx';
 import Navbar from './components/Navbar.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
-import MemoryGame from './pages/MemoryGame.jsx';
-import { useAuth } from './context/AuthContext.jsx';
+import Game from './pages/Game.jsx';
+import Leaderboard from './pages/Leaderboard.jsx';
+import Home from './pages/Home.jsx';
+import './styles/App.css';
 
 function ProtectedRoute({ children }) {
   const { currentUser } = useAuth();
@@ -11,51 +14,37 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
-function GuestRoute({ children }) {
-  const { currentUser } = useAuth();
-  if (currentUser) return <Navigate to="/game" replace />;
-  return children;
-}
-
-function HomeRedirect() {
-  const { currentUser } = useAuth();
-  return <Navigate to={currentUser ? '/game' : '/login'} replace />;
-}
-
 export default function App() {
   return (
-    <div className="app">
+    <div className="app-shell">
       <Navbar />
-      <main className="main">
+      <main className="app-main">
         <Routes>
-          <Route path="/" element={<HomeRedirect />} />
-          <Route
-            path="/login"
-            element={
-              <GuestRoute>
-                <Login />
-              </GuestRoute>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <GuestRoute>
-                <Signup />
-              </GuestRoute>
-            }
-          />
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route
             path="/game"
             element={
               <ProtectedRoute>
-                <MemoryGame />
+                <Game />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/leaderboard"
+            element={
+              <ProtectedRoute>
+                <Leaderboard />
               </ProtectedRoute>
             }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <footer className="app-footer">
+        <span>Memory · Built with React</span>
+      </footer>
     </div>
   );
 }

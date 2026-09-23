@@ -5,65 +5,65 @@ import { useAuth } from '../context/AuthContext.jsx';
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+  const [busy, setBusy] = useState(false);
 
-  const onSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    setSubmitting(true);
+    setBusy(true);
     try {
       await login({ username, password });
       navigate('/game', { replace: true });
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err.message);
     } finally {
-      setSubmitting(false);
+      setBusy(false);
     }
-  };
+  }
 
   return (
-    <div className="card">
-      <h1>Welcome back</h1>
-      <p className="subtitle">Log in to play the Memory game.</p>
+    <section className="page page-auth">
+      <form className="card auth-card" onSubmit={handleSubmit}>
+        <h1>Welcome back</h1>
+        <p className="muted">Log in to continue your memory training.</p>
 
-      {error && <div className="alert error">{error}</div>}
-
-      <form onSubmit={onSubmit} noValidate>
-        <div className="field">
-          <label htmlFor="login-username">Username</label>
+        <label>
+          <span>Username</span>
           <input
-            id="login-username"
             type="text"
-            autoComplete="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="your-username"
+            autoFocus
+            autoComplete="username"
             required
           />
-        </div>
-        <div className="field">
-          <label htmlFor="login-password">Password</label>
+        </label>
+
+        <label>
+          <span>Password</span>
           <input
-            id="login-password"
             type="password"
-            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
+            autoComplete="current-password"
             required
           />
-        </div>
-        <button className="btn" type="submit" disabled={submitting}>
-          {submitting ? 'Logging in…' : 'Log in'}
-        </button>
-      </form>
+        </label>
 
-      <p className="swap">
-        New here? <Link to="/signup">Create an account</Link>
-      </p>
-    </div>
+        {error && <div className="alert alert-error">{error}</div>}
+
+        <button className="btn btn-primary btn-block" disabled={busy}>
+          {busy ? 'Signing in…' : 'Log in'}
+        </button>
+
+        <div className="auth-foot">
+          New here? <Link to="/signup">Create an account</Link>
+        </div>
+      </form>
+    </section>
   );
 }
