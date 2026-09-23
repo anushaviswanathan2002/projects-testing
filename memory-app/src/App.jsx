@@ -32,6 +32,11 @@ export default function App() {
 
     if (deck[a].id === deck[b].id) {
       const nextMatches = matches + 1;
+      setDeck((prevDeck) =>
+        prevDeck.map((card, index) =>
+          index === a || index === b ? { ...card, matched: true } : card,
+        ),
+      );
       setMatches(nextMatches);
       setFlippedIndices([]);
       setLocked(false);
