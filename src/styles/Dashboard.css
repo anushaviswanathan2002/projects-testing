@@ -61,40 +61,6 @@
   padding: 30px 20px;
 }
 
-.tabs-navigation {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 30px;
-  justify-content: center;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 20px;
-}
-
-.tab-btn {
-  padding: 12px 24px;
-  border: 2px solid white;
-  background: transparent;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  font-size: 15px;
-}
-
-.tab-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-}
-
-.tab-btn.active {
-  background: white;
-  color: #667eea;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
 .welcome-section {
   background: white;
   padding: 50px 30px;
