@@ -1,0 +1,147 @@
+.game-container {
+  min-height: calc(100vh - 80px);
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+}
+
+.game-header h2 {
+  font-size: 32px;
+  margin-bottom: 15px;
+}
+
+.game-stats {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.win-message {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.win-message h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #667eea;
+}
+
+.win-message p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  gap: 10px;
+  margin-bottom: 30px;
+  perspective: 1000px;
+}
+
+.card {
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.1s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: bold;
+  border-radius: 8px;
+  backface-visibility: hidden;
+}
+
+.card-front {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: 2px solid #fff;
+}
+
+.card-back {
+  background: white;
+  border: 2px solid #667eea;
+  transform: rotateY(180deg);
+  padding: 10px;
+}
+
+.btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: white;
+  color: #667eea;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-secondary:hover {
+  background: white;
+  color: #667eea;
+}
+
+.loading {
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
