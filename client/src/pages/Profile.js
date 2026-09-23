@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Profile.css';
+import '../styles/Profile.css';
 
 function Profile({ user }) {
   const [stats, setStats] = useState(null);
@@ -12,32 +12,28 @@ function Profile({ user }) {
     fetchGames();
   }, []);
 
+  const token = localStorage.getItem('token');
+
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/stats', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await axios.get('/api/stats', {
+        headers: { Authorization: `Bearer ${token}` }
       });
       setStats(response.data);
     } catch (error) {
-      console.error('Failed to fetch stats:', error);
+      console.error('Failed to fetch stats');
     }
   };
 
   const fetchGames = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/games', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await axios.get('/api/games', {
+        headers: { Authorization: `Bearer ${token}` }
       });
       setGames(response.data);
-      setLoading(false);
     } catch (error) {
-      console.error('Failed to fetch games:', error);
+      console.error('Failed to fetch games');
+    } finally {
       setLoading(false);
     }
   };
