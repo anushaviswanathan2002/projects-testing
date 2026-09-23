@@ -1,16 +1,39 @@
-# React + Vite
+# Memory
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A memory card-matching game built with React + Vite, with a built-in
+username/password authentication flow.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Sign up / Log in** — create a local account; usernames are unique per browser.
+  Passwords are hashed with SHA-256 (via `crypto.subtle`) before being stored.
+- **Memory game** — 16 cards (8 pairs); flip two at a time, matches stay revealed,
+  mismatches flip back after a short delay.
+- **Per-user stats** — moves counter, pairs remaining, and a personal best that
+  persists across sessions (and is keyed per username).
+- **Win detection** — celebratory banner with move count and personal-best callout.
+- **New Game** — reshuffles the deck and resets the round.
+- **Log out** — clears the session and returns to the login screen.
 
-## React Compiler
+## Run
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+npm run dev      # start dev server with HMR
+npm run build    # production build
+npm run preview  # preview the production build
+npm run lint     # oxlint
+```
 
-## Expanding the Oxlint configuration
+## Storage
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+All persistence is in `localStorage`:
+
+| Key                              | Purpose                              |
+| -------------------------------- | ------------------------------------ |
+| `memory_app_users_v1`            | Registered user records (hash only). |
+| `memory_app_session_v1`          | Current session (if any).            |
+| `memory_app_best_v1::<username>` | Personal-best move count per user.   |
+
+There is no backend — this is a static SPA. Clearing site data erases all
+accounts and scores.
