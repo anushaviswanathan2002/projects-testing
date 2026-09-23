@@ -6,7 +6,7 @@ import './MemoryGame.css';
 const EMOJIS = ['🎮', '🎨', '🎭', '🎪', '🎬', '🎤', '🎧', '🎸', '🎹', '🎺', '🏆', '⚡'];
 
 export default function MemoryGame() {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, updateScore } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [cards, setCards] = useState([]);
@@ -25,8 +25,9 @@ export default function MemoryGame() {
   useEffect(() => {
     if (cards.length > 0 && matched.length === cards.length) {
       setGameWon(true);
+      updateScore(moves);
     }
-  }, [matched, cards.length]);
+  }, [matched, cards.length, moves, updateScore]);
 
   const initializeGame = () => {
     let pairCount;

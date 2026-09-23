@@ -59,11 +59,34 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
     setUser(null);
   };
 
+  const updateScore = async (score) => {
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
+
+    try {
+      const res = await fetch('http://localhost:3001/api/score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, score })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        const updatedUser = { ...user, score: data.score };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+    } catch (error) {
+      console.error('Score update error:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signup, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, signup, login, logout, updateScore }}>
       {children}
     </AuthContext.Provider>
   );

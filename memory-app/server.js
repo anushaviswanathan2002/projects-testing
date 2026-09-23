@@ -1,258 +1,185 @@
-import express from 'express';
-import cors from 'cors';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import http from 'http';
+import url from 'url';
 
-const app = express();
-const PORT = 5000;
+// Simple in-memory database
+const users = new Map();
+const sessions = new Map();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Helper function to generate session token
+function generateToken() {
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
 
-// Simple in-memory user storage (in production, use a real database)
-let users = [];
-let memories = []; // Global memories array
+// Helper function to parse JSON body
+function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch (e) {
+        reject(e);
+      }
+    });
+  });
+}
 
-// File path for persisting users
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const usersFile = path.join(__dirname, 'users.json');
-const memoriesFile = path.join(__dirname, 'memories.json');
+// Create server
+const server = http.createServer(async (req, res) => {
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Content-Type', 'application/json');
 
-// Load users from file
-function loadUsers() {
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
+
+  const parsedUrl = url.parse(req.url, true);
+  const pathname = parsedUrl.pathname;
+
   try {
-    if (fs.existsSync(usersFile)) {
-      const data = fs.readFileSync(usersFile, 'utf-8');
-      users = JSON.parse(data);
+    // Sign Up
+    if (pathname === '/api/signup' && req.method === 'POST') {
+      const { email, password, name } = await parseBody(req);
+
+      if (!email || !password || !name) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: 'Missing required fields' }));
+        return;
+      }
+
+      if (users.has(email)) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: 'User already exists' }));
+        return;
+      }
+
+      const token = generateToken();
+      users.set(email, { email, password, name, score: 0 });
+      sessions.set(token, email);
+
+      res.writeHead(200);
+      res.end(JSON.stringify({
+        success: true,
+        token,
+        user: { email, name, score: 0 }
+      }));
+      return;
     }
-  } catch (err) {
-    console.error('Error loading users:', err);
-    users = [];
-  }
-}
 
-// Save users to file
-function saveUsers() {
-  try {
-    fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
-  } catch (err) {
-    console.error('Error saving users:', err);
-  }
-}
+    // Login
+    if (pathname === '/api/login' && req.method === 'POST') {
+      const { email, password } = await parseBody(req);
 
-// Load memories from file
-function loadMemories() {
-  try {
-    if (fs.existsSync(memoriesFile)) {
-      const data = fs.readFileSync(memoriesFile, 'utf-8');
-      memories = JSON.parse(data);
+      if (!email || !password) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: 'Missing required fields' }));
+        return;
+      }
+
+      const user = users.get(email);
+      if (!user || user.password !== password) {
+        res.writeHead(401);
+        res.end(JSON.stringify({ error: 'Invalid credentials' }));
+        return;
+      }
+
+      const token = generateToken();
+      sessions.set(token, email);
+
+      res.writeHead(200);
+      res.end(JSON.stringify({
+        success: true,
+        token,
+        user: { email, name: user.name, score: user.score }
+      }));
+      return;
     }
-  } catch (err) {
-    console.error('Error loading memories:', err);
-    memories = [];
+
+    // Verify session
+    if (pathname === '/api/verify' && req.method === 'POST') {
+      const { token } = await parseBody(req);
+
+      if (!token) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: 'No token provided' }));
+        return;
+      }
+
+      const email = sessions.get(token);
+      if (!email) {
+        res.writeHead(401);
+        res.end(JSON.stringify({ error: 'Invalid token' }));
+        return;
+      }
+
+      const user = users.get(email);
+      res.writeHead(200);
+      res.end(JSON.stringify({
+        success: true,
+        user: { email, name: user.name, score: user.score }
+      }));
+      return;
+    }
+
+    // Update score
+    if (pathname === '/api/score' && req.method === 'POST') {
+      const { token, score } = await parseBody(req);
+
+      if (!token) {
+        res.writeHead(401);
+        res.end(JSON.stringify({ error: 'No token provided' }));
+        return;
+      }
+
+      const email = sessions.get(token);
+      if (!email) {
+        res.writeHead(401);
+        res.end(JSON.stringify({ error: 'Invalid token' }));
+        return;
+      }
+
+      const user = users.get(email);
+      if (score < user.score || user.score === 0) {
+        user.score = score;
+      }
+
+      res.writeHead(200);
+      res.end(JSON.stringify({
+        success: true,
+        score: user.score
+      }));
+      return;
+    }
+
+    // Logout
+    if (pathname === '/api/logout' && req.method === 'POST') {
+      const { token } = await parseBody(req);
+      if (token) {
+        sessions.delete(token);
+      }
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true }));
+      return;
+    }
+
+    // Not found
+    res.writeHead(404);
+    res.end(JSON.stringify({ error: 'Not found' }));
+  } catch (error) {
+    res.writeHead(500);
+    res.end(JSON.stringify({ error: 'Internal server error' }));
   }
-}
-
-// Save memories to file
-function saveMemories() {
-  try {
-    fs.writeFileSync(memoriesFile, JSON.stringify(memories, null, 2));
-  } catch (err) {
-    console.error('Error saving memories:', err);
-  }
-}
-
-// Load users and memories on startup
-loadUsers();
-loadMemories();
-
-// Routes
-
-// Signup
-app.post('/api/auth/signup', (req, res) => {
-  const { username, email, password } = req.body;
-
-  // Validation
-  if (!username || !email || !password) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
-
-  if (username.length < 3) {
-    return res.status(400).json({ error: 'Username must be at least 3 characters' });
-  }
-
-  if (password.length < 6) {
-    return res.status(400).json({ error: 'Password must be at least 6 characters' });
-  }
-
-  // Check if user exists
-  if (users.find(u => u.email === email || u.username === username)) {
-    return res.status(400).json({ error: 'User already exists' });
-  }
-
-  // Create new user
-  const newUser = {
-    id: Date.now().toString(),
-    username,
-    email,
-    password, // In production, hash this!
-    createdAt: new Date().toISOString()
-  };
-
-  users.push(newUser);
-  saveUsers();
-
-  res.json({ 
-    message: 'User created successfully',
-    user: { id: newUser.id, username: newUser.username, email: newUser.email }
-  });
 });
 
-// Login
-app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
-
-  // Validation
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
-  }
-
-  // Find user
-  const user = users.find(u => u.email === email && u.password === password);
-
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid email or password' });
-  }
-
-  res.json({
-    message: 'Login successful',
-    user: { id: user.id, username: user.username, email: user.email }
-  });
-});
-
-// Get user by ID (to verify user is logged in)
-app.get('/api/auth/me', (req, res) => {
-  const userId = req.headers['x-user-id'];
-
-  if (!userId) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  const user = users.find(u => u.id === userId);
-
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  res.json({ user: { id: user.id, username: user.username, email: user.email } });
-});
-
-// Memory Routes
-
-// Get all memories for a user
-app.get('/api/memories', (req, res) => {
-  const userId = req.headers['x-user-id'];
-
-  if (!userId) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  const user = users.find(u => u.id === userId);
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  const userMemories = memories.filter(m => m.userId === userId);
-  res.json({ memories: userMemories });
-});
-
-// Create a new memory
-app.post('/api/memories', (req, res) => {
-  const userId = req.headers['x-user-id'];
-  const { title, content, category } = req.body;
-
-  if (!userId) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  if (!title || !content) {
-    return res.status(400).json({ error: 'Title and content are required' });
-  }
-
-  const newMemory = {
-    id: Date.now().toString(),
-    userId,
-    title,
-    content,
-    category: category || 'general',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
-
-  memories.push(newMemory);
-  saveMemories();
-
-  res.json({ 
-    message: 'Memory created successfully',
-    memory: newMemory 
-  });
-});
-
-// Update a memory
-app.put('/api/memories/:id', (req, res) => {
-  const userId = req.headers['x-user-id'];
-  const { id } = req.params;
-  const { title, content, category } = req.body;
-
-  if (!userId) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  const memory = memories.find(m => m.id === id && m.userId === userId);
-  if (!memory) {
-    return res.status(404).json({ error: 'Memory not found' });
-  }
-
-  if (title) memory.title = title;
-  if (content) memory.content = content;
-  if (category) memory.category = category;
-  memory.updatedAt = new Date().toISOString();
-
-  saveMemories();
-
-  res.json({ 
-    message: 'Memory updated successfully',
-    memory 
-  });
-});
-
-// Delete a memory
-app.delete('/api/memories/:id', (req, res) => {
-  const userId = req.headers['x-user-id'];
-  const { id } = req.params;
-
-  if (!userId) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  const index = memories.findIndex(m => m.id === id && m.userId === userId);
-  if (index === -1) {
-    return res.status(404).json({ error: 'Memory not found' });
-  }
-
-  memories.splice(index, 1);
-  saveMemories();
-
-  res.json({ message: 'Memory deleted successfully' });
-});
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK' });
-});
-
-app.listen(PORT, () => {
+const PORT = 3001;
+server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
