@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes.js';
 import teamRoutes from './routes/team.routes.js';
 import taskRoutes from './routes/task.routes.js';
+import labelRoutes from './routes/label.routes.js';
+import analyticsRoutes from './routes/analytics.routes.js';
 
 dotenv.config();
 
@@ -38,6 +40,8 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api', teamRoutes);
 app.use('/api', taskRoutes);
+app.use('/api', labelRoutes);
+app.use('/api', analyticsRoutes);
 
 // 404 handler
 app.use((req, res) => {
