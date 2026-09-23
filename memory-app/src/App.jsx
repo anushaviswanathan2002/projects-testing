@@ -16,7 +16,9 @@ export default function App() {
   const [seconds, setSeconds] = useState(0)
   const [running, setRunning] = useState(false)
   const [locked, setLocked] = useState(false)
-  const [won, setWon] = useState(false)
+
+  // Win condition is derived directly from matched/deck — no effect required.
+  const won = matched.size === deck.length && deck.length > 0
 
   // Reset board when pair count changes
   const resetGame = useCallback((pairs = pairCount) => {
@@ -27,7 +29,6 @@ export default function App() {
     setSeconds(0)
     setRunning(false)
     setLocked(false)
-    setWon(false)
   }, [pairCount])
 
   const handlePairChange = (n) => {
@@ -63,6 +64,11 @@ export default function App() {
           const updated = new Set(prev)
           updated.add(a)
           updated.add(b)
+          // If this completes the board, stop the timer in the same event
+          // so we don't depend on an effect to derive `won`.
+          if (updated.size === deck.length) {
+            setRunning(false)
+          }
           return updated
         })
         setFlipped([])
@@ -76,14 +82,6 @@ export default function App() {
       }
     }
   }
-
-  // Win detection
-  useEffect(() => {
-    if (matched.size === deck.length && deck.length > 0) {
-      setRunning(false)
-      setWon(true)
-    }
-  }, [matched, deck])
 
   const formatTime = (s) => {
     const m = Math.floor(s / 60).toString().padStart(2, '0')
