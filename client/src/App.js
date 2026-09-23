@@ -13,7 +13,6 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
     if (token && userData) {
       setUser(JSON.parse(userData));
     }
@@ -33,39 +32,22 @@ function App() {
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="app-loading">
+        <div className="app-loading-spinner" />
+      </div>
+    );
   }
 
   return (
     <BrowserRouter>
-      <div className="app">
-        <nav className="navbar">
-          <div className="nav-container">
-            <div className="nav-logo">🎮 Memory Game</div>
-            {user ? (
-              <div className="nav-links">
-                <span className="nav-user">Hi, {user.username}!</span>
-                <a href="/profile" className="nav-link">Profile</a>
-                <a href="/game" className="nav-link">Play</a>
-                <button onClick={handleLogout} className="nav-link logout-btn">Logout</button>
-              </div>
-            ) : (
-              <div className="nav-links">
-                <a href="/login" className="nav-link">Login</a>
-                <a href="/signup" className="nav-link">Sign Up</a>
-              </div>
-            )}
-          </div>
-        </nav>
-
-        <Routes>
-          <Route path="/login" element={user ? <Navigate to="/game" /> : <Login onLogin={handleLogin} />} />
-          <Route path="/signup" element={user ? <Navigate to="/game" /> : <Signup onSignup={handleLogin} />} />
-          <Route path="/game" element={user ? <Game onLogout={handleLogout} /> : <Navigate to="/login" />} />
-          <Route path="/profile" element={user ? <Profile user={user} /> : <Navigate to="/login" />} />
-          <Route path="/" element={user ? <Navigate to="/game" /> : <Navigate to="/login" />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/login"   element={user ? <Navigate to="/game" replace /> : <Login onLogin={handleLogin} />} />
+        <Route path="/signup"  element={user ? <Navigate to="/game" replace /> : <Signup onSignup={handleLogin} />} />
+        <Route path="/game"    element={user ? <Game user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />} />
+        <Route path="/profile" element={user ? <Profile user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />} />
+        <Route path="*"        element={<Navigate to={user ? "/game" : "/login"} replace />} />
+      </Routes>
     </BrowserRouter>
   );
 }

@@ -14,54 +14,56 @@ function Login({ onLogin }) {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
-      const { id, username, email: userEmail, token } = response.data;
-      
+      const res = await axios.post('/api/auth/login', { email, password });
+      const { id, username, email: userEmail, token } = res.data;
       onLogin({ id, username, email: userEmail }, token);
       navigate('/game');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please try again.');
+      setError(err.response?.data?.error || 'Invalid email or password.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-container">
+    <div className="auth-wrapper">
       <div className="auth-card">
-        <h2>Login</h2>
-        {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
+        <div className="auth-logo">🃏</div>
+        <h1 className="auth-title">Memory Game</h1>
+        <p className="auth-subtitle">Sign in to your account</p>
+
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <div className="field">
             <label htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="you@example.com"
               required
             />
           </div>
-          <div className="form-group">
+          <div className="field">
             <label htmlFor="password">Password</label>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="••••••••"
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+          {error && <p className="auth-error">{error}</p>}
+          <button className="auth-btn" type="submit" disabled={loading}>
+            {loading ? <span className="spinner" /> : 'Sign In'}
           </button>
         </form>
-        <p className="auth-link">
-          Don't have an account? <Link to="/signup">Sign up here</Link>
+
+        <p className="auth-switch">
+          Don't have an account? <Link to="/signup">Create one</Link>
         </p>
       </div>
     </div>

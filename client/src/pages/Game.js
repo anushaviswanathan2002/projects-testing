@@ -1,133 +1,201 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Game.css';
 
-function Game({ onLogout }) {
-  const [cards, setCards] = useState([]);
-  const [flipped, setFlipped] = useState([]);
-  const [matched, setMatched] = useState([]);
+const EMOJI_SETS = {
+  easy:   ['🐶','🐱','🐭','🐹','🐰','🦊'],
+  medium: ['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯'],
+  hard:   ['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐸','🐙','🦋','🌸','🍕'],
+};
+
+const COLS = { easy: 3, medium: 4, hard: 4 };
+
+function buildDeck(difficulty) {
+  const emojis = EMOJI_SETS[difficulty];
+  return [...emojis, ...emojis]
+    .sort(() => Math.random() - 0.5)
+    .map((emoji, i) => ({ id: i, emoji, flipped: false, matched: false }));
+}
+
+function fmt(s) {
+  return `${String(Math.floor(s / 60)).padStart(2,'0')}:${String(s % 60).padStart(2,'0')}`;
+}
+
+function Game({ user, onLogout }) {
+  const [difficulty, setDifficulty] = useState('medium');
+  const [cards, setCards] = useState(() => buildDeck('medium'));
+  const [selected, setSelected] = useState([]);
   const [moves, setMoves] = useState(0);
-  const [gameWon, setGameWon] = useState(false);
-  const [gameStarted, setGameStarted] = useState(false);
+  const [time, setTime] = useState(0);
+  const [running, setRunning] = useState(false);
+  const [locked, setLocked] = useState(false);
+  const [won, setWon] = useState(false);
 
-  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setTime((t) => t + 1), 1000);
+    return () => clearInterval(id);
+  }, [running]);
 
-  const initializeGame = () => {
-    const symbols = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
-    const gameCards = [...symbols, ...symbols]
-      .sort(() => Math.random() - 0.5)
-      .map((symbol, index) => ({ id: index, symbol }));
-    
-    setCards(gameCards);
-    setFlipped([]);
-    setMatched([]);
+  const startNewGame = useCallback((diff) => {
+    const d = diff || difficulty;
+    setCards(buildDeck(d));
+    setSelected([]);
     setMoves(0);
-    setGameWon(false);
-    setGameStarted(true);
+    setTime(0);
+    setRunning(false);
+    setLocked(false);
+    setWon(false);
+  }, [difficulty]);
+
+  const handleDifficulty = (d) => {
+    setDifficulty(d);
+    startNewGame(d);
   };
 
-  useEffect(() => {
-    initializeGame();
-  }, []);
+  const handleFlip = (id) => {
+    if (locked || won) return;
+    const card = cards.find((c) => c.id === id);
+    if (!card || card.flipped || card.matched) return;
+    if (!running) setRunning(true);
 
-  useEffect(() => {
-    if (flipped.length === 2) {
-      const [first, second] = flipped;
-      const firstCard = cards[first];
-      const secondCard = cards[second];
+    const updated = cards.map((c) => c.id === id ? { ...c, flipped: true } : c);
+    setCards(updated);
 
-      setMoves(moves + 1);
+    const newSel = [...selected, id];
+    setSelected(newSel);
 
-      if (firstCard.symbol === secondCard.symbol) {
-        setMatched([...matched, first, second]);
-        setFlipped([]);
+    if (newSel.length === 2) {
+      setMoves((m) => m + 1);
+      setLocked(true);
+      const [a, b] = newSel.map((sid) => updated.find((c) => c.id === sid));
+      if (a.emoji === b.emoji) {
+        setTimeout(() => {
+          const matched = updated.map((c) =>
+            c.id === a.id || c.id === b.id ? { ...c, matched: true } : c
+          );
+          setCards(matched);
+          setSelected([]);
+          setLocked(false);
+          if (matched.every((c) => c.matched)) {
+            setRunning(false);
+            setWon(true);
+            saveGame(moves + 1);
+          }
+        }, 600);
       } else {
         setTimeout(() => {
-          setFlipped([]);
-        }, 1000);
+          setCards(updated.map((c) =>
+            c.id === a.id || c.id === b.id ? { ...c, flipped: false } : c
+          ));
+          setSelected([]);
+          setLocked(false);
+        }, 900);
       }
     }
-  }, [flipped]);
+  };
 
-  useEffect(() => {
-    if (matched.length === cards.length && cards.length > 0) {
-      setGameWon(true);
-      saveGameResult();
-    }
-  }, [matched]);
-
-  const saveGameResult = async () => {
+  const saveGame = async (finalMoves) => {
     try {
-      await axios.post(
-        '/api/games',
-        {
-          score: Math.max(0, 100 - moves * 5),
-          moves,
-          completed: true
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-    } catch (err) {
-      console.error('Failed to save game result');
-    }
+      const token = localStorage.getItem('token');
+      await axios.post('/api/games', {
+        score: Math.max(0, 500 - finalMoves * 10 - time * 2),
+        moves: finalMoves,
+        time_seconds: time,
+        completed: true,
+      }, { headers: { Authorization: `Bearer ${token}` } });
+    } catch (e) { /* silent */ }
   };
 
-  const handleCardClick = (index) => {
-    if (gameWon || flipped.includes(index) || matched.includes(index)) {
-      return;
-    }
-
-    if (flipped.length < 2) {
-      setFlipped([...flipped, index]);
-    }
-  };
-
-  if (!gameStarted) {
-    return <div className="loading">Loading game...</div>;
-  }
+  const pairs = EMOJI_SETS[difficulty].length;
+  const matchedCount = cards.filter((c) => c.matched).length / 2;
 
   return (
-    <div className="game-container">
-      <div className="game-header">
-        <h2>Memory Game</h2>
+    <div className="game-wrapper">
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="nav-brand">🃏 Memory Game</div>
+        <div className="nav-right">
+          <Link to="/profile" className="nav-link-btn">📊 Profile</Link>
+          <div className="nav-avatar">{user.username[0].toUpperCase()}</div>
+          <span className="nav-username">{user.username}</span>
+          <button className="logout-btn" onClick={onLogout}>Sign out</button>
+        </div>
+      </nav>
+
+      <main className="game-main">
+        {/* Controls */}
+        <div className="game-controls">
+          <div className="difficulty-btns">
+            {['easy','medium','hard'].map((d) => (
+              <button
+                key={d}
+                className={`diff-btn ${difficulty === d ? 'active' : ''}`}
+                onClick={() => handleDifficulty(d)}
+              >
+                {d.charAt(0).toUpperCase() + d.slice(1)}
+              </button>
+            ))}
+          </div>
+          <button className="restart-btn" onClick={() => startNewGame()}>↺ New Game</button>
+        </div>
+
+        {/* Stats bar */}
         <div className="game-stats">
-          <span>Moves: {moves}</span>
-          <span>Matched: {matched.length / 2}</span>
+          <div className="stat-chip">🕐 {fmt(time)}</div>
+          <div className="stat-chip">🎯 {moves} moves</div>
+          <div className="stat-chip">✅ {matchedCount} / {pairs} pairs</div>
         </div>
-      </div>
 
-      {gameWon && (
-        <div className="win-message">
-          <h3>🎉 You Won! 🎉</h3>
-          <p>Completed in {moves} moves with a score of {Math.max(0, 100 - moves * 5)}</p>
-          <button onClick={initializeGame} className="btn btn-primary">
-            Play Again
-          </button>
+        {/* Card grid */}
+        <div
+          className="grid"
+          style={{ gridTemplateColumns: `repeat(${COLS[difficulty]}, 1fr)` }}
+        >
+          {cards.map((card) => (
+            <div
+              key={card.id}
+              className={`card ${card.flipped || card.matched ? 'flipped' : ''} ${card.matched ? 'matched' : ''}`}
+              onClick={() => handleFlip(card.id)}
+            >
+              <div className="card-inner">
+                <div className="card-back">❓</div>
+                <div className="card-front">{card.emoji}</div>
+              </div>
+            </div>
+          ))}
         </div>
-      )}
+      </main>
 
-      <div className="game-board">
-        {cards.map((card, index) => (
-          <div
-            key={index}
-            className={`card ${
-              flipped.includes(index) || matched.includes(index) ? 'flipped' : ''
-            }`}
-            onClick={() => handleCardClick(index)}
-          >
-            <div className="card-inner">
-              <div className="card-front">?</div>
-              <div className="card-back">{card.symbol}</div>
+      {/* Win Modal */}
+      {won && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-emoji">🎉</div>
+            <h2 className="modal-title">You Won!</h2>
+            <p className="modal-subtitle">All pairs matched! Great job!</p>
+            <div className="modal-stats">
+              <div className="modal-stat">
+                <span className="stat-label">Moves</span>
+                <span className="stat-value">{moves}</span>
+              </div>
+              <div className="modal-stat">
+                <span className="stat-label">Time</span>
+                <span className="stat-value">{fmt(time)}</span>
+              </div>
+              <div className="modal-stat">
+                <span className="stat-label">Score</span>
+                <span className="stat-value">{Math.max(0, 500 - moves * 10 - time * 2)}</span>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button className="modal-btn" onClick={() => startNewGame()}>Play Again</button>
+              <Link to="/profile" className="modal-btn modal-btn-secondary">View Profile</Link>
             </div>
           </div>
-        ))}
-      </div>
-
-      <button onClick={onLogout} className="btn btn-secondary">
-        Logout
-      </button>
+        </div>
+      )}
     </div>
   );
 }
