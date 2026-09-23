@@ -1,0 +1,235 @@
+.wrapper {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.diffRow {
+  display: flex;
+  gap: 8px;
+}
+.diffBtn {
+  padding: 8px 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #94a3b8;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.diffBtn:hover { background: rgba(255,255,255,0.09); color: #e2e8f0; }
+.diffBtnActive {
+  background: rgba(124,58,237,0.25);
+  border-color: #7c3aed;
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+.hud {
+  display: flex;
+  gap: 20px;
+}
+.hudItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 10px 16px;
+}
+.hudIcon { font-size: 20px; }
+.hudValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f1f5f9;
+  line-height: 1.2;
+}
+.hudLabel {
+  font-size: 10px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* Start / win screens */
+.startScreen, .winScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+.startEmoji, .winConfetti {
+  font-size: 64px;
+  animation: float 3s ease-in-out infinite;
+  margin-bottom: 16px;
+}
+.startTitle, .winTitle {
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a78bfa, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.startSub {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 28px;
+  text-transform: capitalize;
+}
+.startBtn {
+  padding: 14px 36px;
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+}
+.startBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(124,58,237,0.5);
+}
+
+.winRating {
+  font-size: 32px;
+  margin-bottom: 24px;
+}
+.winStats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.winStat {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 16px 24px;
+  text-align: center;
+}
+.winStatVal {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f1f5f9;
+  text-transform: capitalize;
+}
+.winStatLabel {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* Board */
+.board {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  gap: 12px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Card */
+.cardOuter {
+  aspect-ratio: 1;
+  cursor: pointer;
+  perspective: 600px;
+  user-select: none;
+}
+.cardInner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 14px;
+}
+.cardFlipped .cardInner {
+  transform: rotateY(180deg);
+}
+
+.cardBack, .cardFront {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(20px, 4vw, 36px);
+  border-radius: 14px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.cardBack {
+  background: linear-gradient(145deg, #2d2a6e, #1e1b4b);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.cardOuter:hover:not(.cardFlipped):not(.cardMatched) .cardBack {
+  box-shadow: 0 6px 24px rgba(124,58,237,0.4);
+  border-color: rgba(124,58,237,0.5);
+}
+
+.cardFront {
+  background: linear-gradient(145deg, #3730a3, #1e1b4b);
+  border: 1px solid rgba(124,58,237,0.4);
+  transform: rotateY(180deg);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.cardMatched .cardFront {
+  background: linear-gradient(145deg, #065f46, #064e3b);
+  border-color: rgba(16,185,129,0.5);
+  box-shadow: 0 0 20px rgba(16,185,129,0.25);
+}
+
+/* Reset button */
+.resetBtn {
+  display: block;
+  margin: 24px auto 0;
+  padding: 10px 24px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #94a3b8;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.resetBtn:hover {
+  background: rgba(255,255,255,0.1);
+  color: #f1f5f9;
+}
+
+@media (max-width: 600px) {
+  .board { gap: 8px; }
+  .controls { flex-direction: column; align-items: flex-start; }
+  .hud { width: 100%; justify-content: space-between; }
+  .hudItem { flex: 1; justify-content: center; padding: 8px 10px; }
+}
