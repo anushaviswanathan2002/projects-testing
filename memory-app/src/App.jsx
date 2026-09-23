@@ -1,122 +1,118 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { useEffect, useState, useCallback } from 'react'
+import Header from './components/Header.jsx'
+import Board from './components/Board.jsx'
+import WinModal from './components/WinModal.jsx'
+import { buildDeck } from './game/deck.js'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const DEFAULT_PAIRS = 8
+
+export default function App() {
+  const [pairCount, setPairCount] = useState(DEFAULT_PAIRS)
+  const [deck, setDeck] = useState(() => buildDeck(DEFAULT_PAIRS))
+  const [flipped, setFlipped] = useState([]) // indices currently face-up
+  const [matched, setMatched] = useState(new Set())
+  const [moves, setMoves] = useState(0)
+  const [seconds, setSeconds] = useState(0)
+  const [running, setRunning] = useState(false)
+  const [locked, setLocked] = useState(false)
+  const [won, setWon] = useState(false)
+
+  // Reset board when pair count changes
+  const resetGame = useCallback((pairs = pairCount) => {
+    setDeck(buildDeck(pairs))
+    setFlipped([])
+    setMatched(new Set())
+    setMoves(0)
+    setSeconds(0)
+    setRunning(false)
+    setLocked(false)
+    setWon(false)
+  }, [pairCount])
+
+  const handlePairChange = (n) => {
+    setPairCount(n)
+    resetGame(n)
+  }
+
+  // Timer
+  useEffect(() => {
+    if (!running) return
+    const id = setInterval(() => setSeconds((s) => s + 1), 1000)
+    return () => clearInterval(id)
+  }, [running])
+
+  // Card click handler
+  const handleCardClick = (index) => {
+    if (locked) return
+    if (matched.has(index)) return
+    if (flipped.includes(index)) return
+    if (flipped.length === 2) return
+
+    if (!running) setRunning(true)
+
+    const next = [...flipped, index]
+    setFlipped(next)
+
+    if (next.length === 2) {
+      setMoves((m) => m + 1)
+      const [a, b] = next
+      if (deck[a].pairId === deck[b].pairId) {
+        // Match
+        setMatched((prev) => {
+          const updated = new Set(prev)
+          updated.add(a)
+          updated.add(b)
+          return updated
+        })
+        setFlipped([])
+      } else {
+        // Mismatch — flip back after short delay
+        setLocked(true)
+        setTimeout(() => {
+          setFlipped([])
+          setLocked(false)
+        }, 800)
+      }
+    }
+  }
+
+  // Win detection
+  useEffect(() => {
+    if (matched.size === deck.length && deck.length > 0) {
+      setRunning(false)
+      setWon(true)
+    }
+  }, [matched, deck])
+
+  const formatTime = (s) => {
+    const m = Math.floor(s / 60).toString().padStart(2, '0')
+    const ss = (s % 60).toString().padStart(2, '0')
+    return `${m}:${ss}`
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <div className="app">
+      <Header
+        moves={moves}
+        time={formatTime(seconds)}
+        pairCount={pairCount}
+        onPairChange={handlePairChange}
+        onReset={() => resetGame()}
+      />
+      <Board
+        deck={deck}
+        flipped={flipped}
+        matched={matched}
+        onCardClick={handleCardClick}
+      />
+      <WinModal
+        open={won}
+        moves={moves}
+        time={formatTime(seconds)}
+        pairs={pairCount}
+        onPlayAgain={() => resetGame()}
+      />
+    </div>
   )
 }
-
-export default App
