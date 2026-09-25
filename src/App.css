@@ -1,0 +1,70 @@
+.app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  padding: 1rem;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  min-width: 300px;
+}
+
+.card h1 {
+  margin: 0 0 1rem;
+  color: #1e293b;
+  font-size: 1.75rem;
+}
+
+.count {
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: #6366f1;
+  margin: 1rem 0 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.btn {
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #ffffff;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+  min-width: 56px;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.increment {
+  background: #22c55e;
+}
+
+.decrement {
+  background: #ef4444;
+}
+
+.reset {
+  background: #64748b;
+  font-size: 1rem;
+}
