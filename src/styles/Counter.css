@@ -1,0 +1,120 @@
+.counter-card {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: counterAppear 0.3s ease-out;
+}
+
+@keyframes counterAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.counter-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.counter-display {
+  text-align: center;
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.counter-display h3 {
+  color: #667eea;
+  font-size: 14px;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.counter-value {
+  font-size: 48px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1;
+}
+
+.counter-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.counter-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.btn-increment {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 18px;
+}
+
+.btn-increment:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-decrement {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  font-size: 18px;
+}
+
+.btn-decrement:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+}
+
+.btn-reset {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  flex: 0.5;
+}
+
+.btn-reset:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  color: #333;
+  flex: 0.5;
+}
+
+.btn-delete:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(250, 112, 154, 0.4);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}

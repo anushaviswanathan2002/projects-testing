@@ -1,0 +1,48 @@
+.auth-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 400px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toggle-text {
+  text-align: center;
+  color: white;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #ffd700;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: bold;
+  padding: 0;
+  margin-left: 5px;
+  transition: color 0.2s;
+}
+
+.toggle-btn:hover {
+  color: #ffed4e;
+}
