@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Genesis - Algorithmic Galaxy Art</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #e0e6ff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        #p5-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        .controls {
+            background: rgba(10, 14, 39, 0.95);
+            padding: 12px 20px;
+            border-top: 1px solid rgba(224, 230, 255, 0.2);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .control-group label {
+            color: #a0aeff;
+        }
+        
+        input[type="range"] {
+            width: 120px;
+            cursor: pointer;
+            accent-color: #00d4ff;
+        }
+        
+        input[type="number"] {
+            width: 80px;
+            padding: 4px 6px;
+            background: rgba(224, 230, 255, 0.1);
+            border: 1px solid rgba(224, 230, 255, 0.3);
+            color: #e0e6ff;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+        }
+        
+        button {
+            padding: 6px 14px;
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            transition: all 0.2s;
+            border-radius: 3px;
+        }
+        
+        button:hover {
+            background: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+        }
+        
+        .info {
+            margin-left: auto;
+            color: #6a70aa;
+            font-size: 11px;
+        }
+        
+        .hint {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(10, 14, 39, 0.8);
+            padding: 10px 15px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 3px;
+            font-size: 11px;
+            color: #a0aeff;
+            max-width: 280px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div id="p5-container"></div>
+    
+    <div class="controls">
+        <div class="control-group">
+            <label>Seed:</label>
+            <input type="number" id="seedInput" value="42" min="0" max="999999">
+            <button id="randomSeedBtn">Randomize</button>
+        </div>
+        
+        <div class="control-group">
+            <label>Particles:</label>
+            <input type="range" id="particleCount" value="400" min="50" max="1000" step="50">
+            <span id="particleValue">400</span>
+        </div>
+        
+        <div class="control-group">
+            <label>Gravity:</label>
+            <input type="range" id="gravityForce" value="0.15" min="0" max="0.5" step="0.05">
+            <span id="gravityValue">0.15</span>
+        </div>
+        
+        <div class="control-group">
+            <label>Noise Scale:</label>
+            <input type="range" id="noiseScale" value="0.005" min="0.001" max="0.02" step="0.001">
+            <span id="noiseValue">0.005</span>
+        </div>
+        
+        <div class="control-group">
+            <label>Trail:</label>
+            <input type="range" id="trailFade" value="15" min="5" max="50" step="5">
+            <span id="trailValue">15</span>
+        </div>
+        
+        <div class="info">Press SPACE to pause</div>
+    </div>
+    
+    <div class="hint">
+        🌌 <strong>Stellar Genesis</strong><br>
+        Each seed contains a unique cosmos. Adjust parameters to explore the emergent beauty of algorithmic galaxies.
+    </div>
+
+    <script>
+        let seed = 42;
+        let particles = [];
+        let isPaused = false;
+        let time = 0;
+        
+        class Particle {
+            constructor(x, y, seed, noiseTime) {
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = 0;
+                this.ax = 0;
+                this.ay = 0;
+                this.life = 1;
+                this.maxLife = random(200, 400);
+                this.mass = random(0.5, 2);
+                this.trail = [];
+                this.noiseId = random(1000);
+            }
+            
+            update(centerX, centerY, gravityForce, noiseScale, time) {
+                // Gravity toward center
+                const dx = centerX - this.x;
+                const dy = centerY - this.y;
+                const dist = sqrt(dx * dx + dy * dy);
+                
+                if (dist > 1) {
+                    const force = gravityForce / (dist * 0.01);
+                    this.ax += (dx / dist) * force;
+                    this.ay += (dy / dist) * force;
+                }
+                
+                // Noise-based force field
+                const nx = this.x * noiseScale;
+                const ny = this.y * noiseScale;
+                const angle = noise(nx, ny, this.noiseId + time * 0.01) * TWO_PI;
+                const noiseForce = 0.3;
+                this.ax += cos(angle) * noiseForce;
+                this.ay += sin(angle) * noiseForce;
+                
+                // Update velocity with damping
+                this.vx += this.ax;
+                this.vy += this.ay;
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Record trail
+                if (this.trail.length === 0 || 
+                    dist(this.x, this.y, this.trail[this.trail.length - 1].x, this.trail[this.trail.length - 1].y) > 2) {
+                    this.trail.push({ x: this.x, y: this.y });
+                    if (this.trail.length > 40) {
+                        this.trail.shift();
+                    }
+                }
+                
+                // Age particle
+                this.life -= 1 / this.maxLife;
+                
+                // Reset acceleration
+                this.ax = 0;
+                this.ay = 0;
+                
+                return this.life > 0;
+            }
+            
+            display(trailFade) {
+                // Draw trail with gradient
+                strokeWeight(0.5);
+                for (let i = 0; i < this.trail.length; i++) {
+                    const alpha = (i / this.trail.length) * 200 * this.life;
+                    stroke(100, 180, 255, alpha / trailFade);
+                    const p1 = this.trail[i];
+                    const p2 = this.trail[i + 1];
+                    if (p2) {
+                        line(p1.x, p1.y, p2.x, p2.y);
+                    }
+                }
+                
+                // Draw particle
+                noStroke();
+                const size = 2 * this.life * this.mass;
+                const hue = noise(this.noiseId * 0.1) * 360;
+                colorMode(HSB);
+                fill(hue, 80, 255, 180 * this.life);
+                circle(this.x, this.y, size);
+                colorMode(RGB);
+                
+                // Draw glow
+                fill(150, 200, 255, 80 * this.life);
+                circle(this.x, this.y, size * 2.5);
+            }
+        }
+        
+        function initParticles(numParticles, cx, cy, s) {
+            randomSeed(s);
+            noiseSeed(s);
+            particles = [];
+            
+            for (let i = 0; i < numParticles; i++) {
+                const angle = random(TWO_PI);
+                const rad = random(50, 150);
+                const x = cx + cos(angle) * rad;
+                const y = cy + sin(angle) * rad;
+                particles.push(new Particle(x, y, s, 0));
+            }
+        }
+        
+        function setup() {
+            const container = document.getElementById('p5-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            createCanvas(width, height - 80);
+            
+            initParticles(400, width / 2, height / 2, seed);
+            
+            // Event listeners
+            document.getElementById('seedInput').addEventListener('change', (e) => {
+                seed = parseInt(e.target.value) || 42;
+                initParticles(particles.length, width / 2, height / 2, seed);
+            });
+            
+            document.getElementById('randomSeedBtn').addEventListener('click', () => {
+                seed = floor(random(1000000));
+                document.getElementById('seedInput').value = seed;
+                initParticles(particles.length, width / 2, height / 2, seed);
+            });
+            
+            document.getElementById('particleCount').addEventListener('input', (e) => {
+                const count = parseInt(e.target.value);
+                document.getElementById('particleValue').textContent = count;
+                initParticles(count, width / 2, height / 2, seed);
+            });
+            
+            document.getElementById('gravityForce').addEventListener('input', (e) => {
+                document.getElementById('gravityValue').textContent = e.target.value;
+            });
+            
+            document.getElementById('noiseScale').addEventListener('input', (e) => {
+                document.getElementById('noiseValue').textContent = e.target.value;
+            });
+            
+            document.getElementById('trailFade').addEventListener('input', (e) => {
+                document.getElementById('trailValue').textContent = e.target.value;
+            });
+        }
+        
+        function draw() {
+            // Deep space background with gradient
+            background(10, 14, 39);
+            
+            // Add subtle radial gradient effect
+            for (let i = 0; i < 3; i++) {
+                noFill();
+                strokeWeight(0.5);
+                stroke(100, 120, 200, 20 - i * 5);
+                const size = (width / 2) * (1 + i * 0.3);
+                circle(width / 2, height / 2, size);
+            }
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const gravityForce = parseFloat(document.getElementById('gravityForce').value);
+            const noiseScale = parseFloat(document.getElementById('noiseScale').value);
+            const trailFade = parseFloat(document.getElementById('trailFade').value);
+            
+            if (!isPaused) {
+                time++;
+                
+                // Update and display particles
+                particles = particles.filter(p => 
+                    p.update(centerX, centerY, gravityForce, noiseScale, time)
+                );
+                
+                // Spawn new particles when old ones die
+                while (particles.length < 400) {
+                    const angle = random(TWO_PI);
+                    const rad = random(50, 150);
+                    const x = centerX + cos(angle) * rad;
+                    const y = centerY + sin(angle) * rad;
+                    particles.push(new Particle(x, y, seed, time));
+                }
+            }
+            
+            // Display all particles
+            particles.forEach(p => p.display(trailFade));
+            
+            // Draw center point
+            noStroke();
+            fill(200, 220, 255, 60);
+            circle(centerX, centerY, 8);
+            fill(100, 150, 255, 40);
+            circle(centerX, centerY, 20);
+        }
+        
+        window.addEventListener('keypress', (e) => {
+            if (e.code === 'Space') {
+                isPaused = !isPaused;
+                e.preventDefault();
+            }
+        });
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('p5-container');
+            resizeCanvas(container.clientWidth, container.clientHeight - 80);
+        });
+    </script>
+</body>
+</html>
