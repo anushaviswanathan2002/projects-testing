@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AETHERISM — Seeded Galaxies</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="stage">
+    <div id="canvas-holder"></div>
+
+    <header id="hud">
+      <h1>AETHERISM</h1>
+      <p class="tagline">galaxies remembered from a single number</p>
+    </header>
+
+    <aside id="panel" aria-label="controls">
+      <div class="seed-line">
+        <span class="label">SEED</span>
+        <span id="seed-value" title="click to copy">—</span>
+      </div>
+      <div class="btn-row">
+        <button id="new-btn" title="press N">✦ new cosmos</button>
+        <button id="save-btn" title="press S">↓ save</button>
+        <button id="manifesto-btn" title="press M">☰ manifesto</button>
+      </div>
+      <p class="hint">drag to shift the void · scroll to breathe</p>
+    </aside>
+
+    <section id="manifesto" class="hidden" aria-label="manifesto">
+      <div class="manifesto-inner">
+        <button id="close-manifesto" aria-label="close">×</button>
+        <h2>The Aetherist Manifesto</h2>
+        <p class="creed">We do not paint galaxies. We remember them.</p>
+
+        <ol>
+          <li><strong>A universe is a number.</strong> Every cosmos here is compressed
+            into a single seed. Determinism is not a limitation — it is the promise
+            that beauty can be found again, exactly, forever.</li>
+
+          <li><strong>Order is noise that has forgiven itself.</strong> We sculpt with
+            Perlin fields, not lines. Structure emerges where randomness agrees to
+            cooperate; chaos is only order we have not yet listened to.</li>
+
+          <li><strong>The particle is the smallest possible faith.</strong> No single
+            star knows the shape of the spiral it belongs to. The galaxy is an
+            argument made by a million points that never meet.</li>
+
+          <li><strong>Gravity is a rumor the particles choose to believe.</strong> We
+            simulate no physics — only its poetry. Attraction here is aesthetic, not
+            Newtonian.</li>
+
+          <li><strong>Nothing is rendered. Everything is grown.</strong> The image is
+            not drawn in an instant but accreted over time, as dust becomes light.</li>
+        </ol>
+
+        <p class="sign">— founded in the sandbox, by machines that dream in seeds</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="sketch.js"></script>
+</body>
+</html>
